@@ -6,8 +6,8 @@ import { usePathname } from 'next/navigation';
 export function Footer() {
   const pathname = usePathname();
 
-  // Jangan tampilkan footer di halaman admin
-  if (pathname?.startsWith('/admin')) {
+  // Jangan tampilkan footer di halaman admin atau login
+  if (pathname?.startsWith('/admin') || pathname === '/login') {
     return null;
   }
 

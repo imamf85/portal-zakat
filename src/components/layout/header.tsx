@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Home, Users, HandHeart, Images, FileDown, Menu, X } from 'lucide-react';
+import { Home, Users, HandHeart, Images, FileDown, Menu, X, Settings } from 'lucide-react';
 import { useState } from 'react';
+import { useAuth } from '@/components/providers/auth-provider';
 
 const navigation = [
   { name: 'Beranda', href: '/', icon: Home },
@@ -17,9 +18,10 @@ const navigation = [
 export function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user } = useAuth();
 
-  // Jangan tampilkan header di halaman admin
-  if (pathname?.startsWith('/admin')) {
+  // Jangan tampilkan header di halaman admin atau login
+  if (pathname?.startsWith('/admin') || pathname === '/login') {
     return null;
   }
 
@@ -63,6 +65,15 @@ export function Header() {
                 </Link>
               );
             })}
+            {user && (
+              <Link
+                href="/admin"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 ml-2 border-l border-gray-200 pl-4"
+              >
+                <Settings className="w-4 h-4" />
+                Admin
+              </Link>
+            )}
           </nav>
 
           {/* Mobile menu button */}
@@ -101,6 +112,16 @@ export function Header() {
                 </Link>
               );
             })}
+            {user && (
+              <Link
+                href="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 mt-2 border-t border-gray-100 pt-4"
+              >
+                <Settings className="w-5 h-5" />
+                Admin Panel
+              </Link>
+            )}
           </nav>
         )}
       </div>
