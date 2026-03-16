@@ -45,7 +45,8 @@ export function RealtimeDashboard({ initialStats }: RealtimeDashboardProps) {
           schema: 'public',
           table: 'penerimaan',
         },
-        () => {
+        (payload) => {
+          console.log('Penerimaan change:', payload);
           refreshStats();
         }
       )
@@ -61,15 +62,22 @@ export function RealtimeDashboard({ initialStats }: RealtimeDashboardProps) {
           schema: 'public',
           table: 'penyaluran',
         },
-        () => {
+        (payload) => {
+          console.log('Penyaluran change:', payload);
           refreshStats();
         }
       )
       .subscribe();
 
+    // Fallback polling setiap 30 detik
+    const pollInterval = setInterval(() => {
+      refreshStats();
+    }, 30000);
+
     return () => {
       supabase.removeChannel(penerimaanChannel);
       supabase.removeChannel(penyaluranChannel);
+      clearInterval(pollInterval);
     };
   }, [refreshStats]);
 
