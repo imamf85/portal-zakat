@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Users,
@@ -6,42 +9,92 @@ import {
   HandHeart,
   TrendingUp,
   UserPlus,
-  Clock
+  Clock,
+  Loader2,
+  RefreshCw
 } from 'lucide-react';
-import { formatRupiah, formatKg } from '@/lib/utils';
+import { formatRupiah, formatKg, formatWaktuJakarta } from '@/lib/utils';
+import { getStatistikDashboard, getPenerimaan } from '@/lib/api';
+import { getCurrentHijriYear, type StatistikDashboard, type Penerimaan } from '@/lib/supabase';
 import Link from 'next/link';
 
-// Data dummy untuk admin dashboard
-const stats = {
-  penerimaan: {
-    totalMuzakki: 75,
-    totalJiwa: 250,
-    zakatUang: 12500000,
-    zakatBeras: 312.5,
-    zakatMaal: 5000000,
-    infaq: 1500000,
-  },
-  penyaluran: {
-    totalMustahik: 69,
-    uang: 10000000,
-    beras: 250,
-  },
-  recentActivity: [
-    { nama: 'Pak Prio', jenis: 'Zakat Fitrah', nominal: 250000, waktu: '2 jam lalu' },
-    { nama: 'Pak R. Shopam', jenis: 'Zakat Fitrah', nominal: 200000, waktu: '3 jam lalu' },
-    { nama: 'Pak Iwan', jenis: 'Zakat Fitrah', nominal: 150000, waktu: '5 jam lalu' },
-  ],
-};
-
 export default function AdminDashboard() {
+  const [stats, setStats] = useState<StatistikDashboard | null>(null);
+  const [recentActivity, setRecentActivity] = useState<Penerimaan[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      const [statsData, penerimaanData] = await Promise.all([
+        getStatistikDashboard(),
+        getPenerimaan(getCurrentHijriYear()),
+      ]);
+      setStats(statsData);
+      // Get 5 most recent
+      setRecentActivity(penerimaanData.slice(0, 5));
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    fetchData();
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-[#599E6E] mx-auto mb-4" />
+          <p className="text-gray-500">Memuat data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!stats) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-gray-500">Gagal memuat data</p>
+      </div>
+    );
+  }
+
+  const totalUang = stats.penerimaan.zakatUang + stats.penerimaan.zakatMaal + stats.penerimaan.infaq;
+  const serapanPersen = stats.penerimaan.zakatUang > 0
+    ? Math.round((stats.penyaluran.uang / stats.penerimaan.zakatUang) * 100)
+    : 0;
+  const rataRataJiwa = stats.penerimaan.totalMuzakki > 0
+    ? (stats.penerimaan.totalJiwa / stats.penerimaan.totalMuzakki).toFixed(1)
+    : '0';
+
   return (
     <div>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard Admin</h1>
-        <p className="mt-1 text-gray-500">
-          Kelola penerimaan dan penyaluran zakat Musholla Al-Hikmah
-        </p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard Admin</h1>
+          <p className="mt-1 text-gray-500">
+            Kelola penerimaan dan penyaluran zakat Musholla Al-Hikmah
+          </p>
+        </div>
+        <button
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
+        >
+          <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </button>
       </div>
 
       {/* Quick Stats */}
@@ -136,22 +189,35 @@ export default function AdminDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {stats.recentActivity.map((activity, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900">{activity.nama}</p>
-                    <p className="text-sm text-gray-500">{activity.jenis}</p>
+            {recentActivity.length === 0 ? (
+              <p className="text-gray-500 text-center py-4">Belum ada aktivitas</p>
+            ) : (
+              <div className="space-y-4">
+                {recentActivity.map((activity) => (
+                  <div key={activity.id} className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-gray-900">{activity.nama_muzakki}</p>
+                      <p className="text-sm text-gray-500">
+                        {activity.jenis_fitrah === 'uang' ? 'Zakat Fitrah (Uang)' :
+                         activity.jenis_fitrah === 'beras' ? 'Zakat Fitrah (Beras)' : 'Zakat'}
+                        {activity.nominal_maal ? ' + Maal' : ''}
+                        {activity.nominal_infaq ? ' + Infaq' : ''}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium text-[#599E6E]">
+                        {activity.jenis_fitrah === 'beras'
+                          ? formatKg(activity.nominal_fitrah || 0)
+                          : formatRupiah(activity.nominal_fitrah || 0)}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {formatWaktuJakarta(activity.created_at)}
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium text-[#599E6E]">
-                      {formatRupiah(activity.nominal)}
-                    </p>
-                    <p className="text-xs text-gray-400">{activity.waktu}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -187,7 +253,7 @@ export default function AdminDashboard() {
               <div className="flex justify-between text-lg font-semibold">
                 <span>Total Uang</span>
                 <span className="text-[#599E6E]">
-                  {formatRupiah(stats.penerimaan.zakatUang + stats.penerimaan.zakatMaal + stats.penerimaan.infaq)}
+                  {formatRupiah(totalUang)}
                 </span>
               </div>
             </div>
@@ -219,7 +285,7 @@ export default function AdminDashboard() {
               <div className="flex justify-between">
                 <span className="text-gray-500">Serapan</span>
                 <span className="font-semibold text-[#599E6E]">
-                  {Math.round((stats.penyaluran.uang / stats.penerimaan.zakatUang) * 100)}%
+                  {serapanPersen}%
                 </span>
               </div>
             </div>
@@ -246,13 +312,21 @@ export default function AdminDashboard() {
               <div className="flex justify-between">
                 <span className="text-gray-500">Rata-rata/Muzakki</span>
                 <span className="font-medium">
-                  {(stats.penerimaan.totalJiwa / stats.penerimaan.totalMuzakki).toFixed(1)} jiwa
+                  {rataRataJiwa} jiwa
                 </span>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Last Update */}
+      {stats.lastUpdate && (
+        <div className="mt-6 text-center text-sm text-gray-400">
+          <Clock className="w-4 h-4 inline-block mr-1" />
+          Terakhir diperbarui: {formatWaktuJakarta(stats.lastUpdate)}
+        </div>
+      )}
     </div>
   );
 }
