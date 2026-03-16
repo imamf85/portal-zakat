@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { MobileNav } from "@/components/layout/mobile-nav";
 import { AuthProvider } from "@/components/providers/auth-provider";
 
 const geistSans = Geist({
@@ -28,10 +29,11 @@ export default function RootLayout({
       >
         <AuthProvider>
           <Header />
-          <main className="flex-1">
+          <main className="flex-1 pb-20 md:pb-0">
             {children}
           </main>
           <Footer />
+          <MobileNav />
         </AuthProvider>
       </body>
     </html>
