@@ -15,6 +15,18 @@ export const metadata: Metadata = {
   title: "Portal Zakat - Musholla Al-Hikmah",
   description: "Transparansi pengelolaan zakat fitrah Musholla Al-Hikmah",
   keywords: ["zakat", "fitrah", "musholla", "al-hikmah", "transparansi"],
+  icons: {
+    icon: [
+      { url: "/favicon-32x32.png", sizes: "any" },
+      { url: "/logo_alhikmah.png", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  openGraph: {
+    title: "Portal Zakat - Musholla Al-Hikmah",
+    description: "Transparansi pengelolaan zakat fitrah Musholla Al-Hikmah",
+    images: ["/logo_alhikmah.png"],
+  },
 };
 
 export default function RootLayout({
