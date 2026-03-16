@@ -88,4 +88,5 @@ export interface StatistikDashboard {
     beras: number;
   };
   tahunLalu: RekapTahunan | null;
+  lastUpdate: string | null;
 }

@@ -134,6 +134,9 @@ export async function getStatistikDashboard(): Promise<StatistikDashboard> {
   // Fetch rekap tahun lalu
   const tahunLalu = await getRekapTahunan(tahunLaluHijriah);
 
+  // Get last update time
+  const lastUpdate = await getLastUpdateTime(tahunIni);
+
   // Hitung statistik penerimaan
   const totalMuzakki = penerimaan.length;
   const totalJiwa = penerimaan.reduce((acc, p) => acc + (p.jumlah_jiwa || 0), 0);
@@ -166,7 +169,46 @@ export async function getStatistikDashboard(): Promise<StatistikDashboard> {
       beras: penyaluranBeras,
     },
     tahunLalu,
+    lastUpdate,
   };
+}
+
+// =============================================
+// LAST UPDATE TIME
+// =============================================
+
+export async function getLastUpdateTime(tahunHijriah?: string): Promise<string | null> {
+  const tahun = tahunHijriah || getCurrentHijriYear();
+
+  // Get latest from penerimaan
+  const { data: penerimaanData } = await supabase
+    .from('penerimaan')
+    .select('created_at')
+    .eq('tahun_hijriah', tahun)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  // Get latest from penyaluran
+  const { data: penyaluranData } = await supabase
+    .from('penyaluran')
+    .select('created_at')
+    .eq('tahun_hijriah', tahun)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  const penerimaanTime = penerimaanData?.created_at ? new Date(penerimaanData.created_at) : null;
+  const penyaluranTime = penyaluranData?.created_at ? new Date(penyaluranData.created_at) : null;
+
+  // Return the most recent
+  if (!penerimaanTime && !penyaluranTime) return null;
+  if (!penerimaanTime) return penyaluranTime?.toISOString() || null;
+  if (!penyaluranTime) return penerimaanTime?.toISOString() || null;
+
+  return penerimaanTime > penyaluranTime
+    ? penerimaanTime.toISOString()
+    : penyaluranTime.toISOString();
 }
 
 // =============================================

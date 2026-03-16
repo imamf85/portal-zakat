@@ -97,3 +97,22 @@ export function formatNoHp(noHp: string | number | null): string {
   }
   return str;
 }
+
+/**
+ * Format tanggal dan waktu ke timezone Asia/Jakarta
+ */
+export function formatWaktuJakarta(dateString: string | null): string {
+  if (!dateString) return '-';
+
+  const date = new Date(dateString);
+
+  return date.toLocaleString('id-ID', {
+    timeZone: 'Asia/Jakarta',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }) + ' WIB';
+}

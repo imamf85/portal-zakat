@@ -3,10 +3,10 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { getStatistikDashboard } from '@/lib/api';
-import { Banknote, Scale, Heart, Users, HandHeart, TrendingUp, RefreshCw } from 'lucide-react';
+import { Banknote, Scale, Heart, Users, HandHeart, TrendingUp, RefreshCw, Clock } from 'lucide-react';
 import { StatCard } from '@/components/ui/stat-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatRupiah, formatKg } from '@/lib/utils';
+import { formatRupiah, formatKg, formatWaktuJakarta } from '@/lib/utils';
 import type { StatistikDashboard } from '@/lib/supabase';
 
 interface RealtimeDashboardProps {
@@ -101,6 +101,14 @@ export function RealtimeDashboard({ initialStats }: RealtimeDashboardProps) {
         <div className="fixed top-20 right-4 z-50 flex items-center gap-2 bg-white shadow-lg rounded-full px-4 py-2 text-sm text-gray-600">
           <RefreshCw className="w-4 h-4 animate-spin text-[#599E6E]" />
           <span>Memperbarui data...</span>
+        </div>
+      )}
+
+      {/* Last Update Info */}
+      {stats.lastUpdate && (
+        <div className="mb-6 flex items-center justify-center gap-2 text-sm text-gray-500">
+          <Clock className="w-4 h-4" />
+          <span>Terakhir diperbarui: {formatWaktuJakarta(stats.lastUpdate)}</span>
         </div>
       )}
 
