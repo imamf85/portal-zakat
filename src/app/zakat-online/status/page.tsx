@@ -15,7 +15,8 @@ import {
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { getZakatOnlineByKode, uploadBuktiTransfer } from '@/lib/zakat-online-api';
+import { getZakatOnlineByKode, uploadBuktiTransfer, getZakatOnlineById } from '@/lib/zakat-online-api';
+import { notifyAdminNewUpload } from '@/app/actions/zakat-online';
 import { formatRupiah, formatWaktuJakarta } from '@/lib/utils';
 import type { ZakatOnline, StatusZakat } from '@/types/zakat-online';
 
@@ -119,6 +120,13 @@ function StatusPageContent() {
 
     try {
       await uploadBuktiTransfer(transaction.id, buktiFile);
+
+      // Get updated transaction data and notify admin
+      const updatedData = await getZakatOnlineById(transaction.id);
+      if (updatedData) {
+        await notifyAdminNewUpload(updatedData);
+      }
+
       setUploadSuccess(true);
       // Refresh transaction data
       await handleSearch(transaction.kode_transaksi);

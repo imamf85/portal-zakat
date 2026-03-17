@@ -17,9 +17,9 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/components/providers/auth-provider';
-import { getZakatOnlineById, verifyZakatOnline, rejectZakatOnline } from '@/lib/zakat-online-api';
-import { sendWhatsApp, getVerificationMessage, getRejectionMessage } from '@/lib/waha';
-import { formatRupiah, formatWaktuJakarta, formatWhatsAppNumber } from '@/lib/utils';
+import { getZakatOnlineById } from '@/lib/zakat-online-api';
+import { verifyZakatOnlineAction, rejectZakatOnlineAction } from '@/app/actions/zakat-online';
+import { formatRupiah, formatWaktuJakarta } from '@/lib/utils';
 import type { ZakatOnline, StatusZakat } from '@/types/zakat-online';
 
 const statusConfig: Record<StatusZakat, { label: string; color: string; bgColor: string }> = {
@@ -71,18 +71,13 @@ export default function AdminZakatDetailPage({ params }: AdminZakatDetailPagePro
     setMessage(null);
 
     try {
-      const result = await verifyZakatOnline(transaction.id, user.id);
+      const result = await verifyZakatOnlineAction(transaction.id, user.id);
 
-      if (result) {
-        // Send WhatsApp notification
-        const invoiceUrl = `${window.location.origin}/zakat-online/invoice/${result.invoice_token}`;
-        const waMessage = getVerificationMessage(result, invoiceUrl);
-        const phone = formatWhatsAppNumber(result.no_whatsapp);
-
-        await sendWhatsApp(phone, waMessage);
-
-        setMessage({ type: 'success', text: 'Transaksi berhasil diverifikasi dan notifikasi WhatsApp terkirim!' });
-        setTransaction(result);
+      if (result.success && result.data) {
+        setMessage({ type: 'success', text: 'Transaksi berhasil diverifikasi! Data tersinkron ke penerimaan dan notifikasi WhatsApp terkirim.' });
+        setTransaction(result.data);
+      } else {
+        setMessage({ type: 'error', text: result.error || 'Gagal memverifikasi transaksi' });
       }
     } catch (error) {
       console.error('Error verifying:', error);
@@ -99,19 +94,15 @@ export default function AdminZakatDetailPage({ params }: AdminZakatDetailPagePro
     setMessage(null);
 
     try {
-      const result = await rejectZakatOnline(transaction.id, user.id, rejectReason);
+      const result = await rejectZakatOnlineAction(transaction.id, user.id, rejectReason);
 
-      if (result) {
-        // Send WhatsApp notification
-        const waMessage = getRejectionMessage(result, rejectReason);
-        const phone = formatWhatsAppNumber(result.no_whatsapp);
-
-        await sendWhatsApp(phone, waMessage);
-
+      if (result.success && result.data) {
         setMessage({ type: 'success', text: 'Transaksi ditolak dan notifikasi WhatsApp terkirim!' });
-        setTransaction(result);
+        setTransaction(result.data);
         setShowRejectModal(false);
         setRejectReason('');
+      } else {
+        setMessage({ type: 'error', text: result.error || 'Gagal menolak transaksi' });
       }
     } catch (error) {
       console.error('Error rejecting:', error);

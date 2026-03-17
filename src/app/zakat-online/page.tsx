@@ -2,13 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, ArrowRight, Loader2, CheckCircle, Upload, AlertCircle } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowLeft, ArrowRight, Loader2, CheckCircle, Upload, AlertCircle, Search } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { StepIndicator, ZAKAT_FORM_STEPS } from '@/components/zakat-online/step-indicator';
 import { NameListInput } from '@/components/zakat-online/name-list-input';
 import { PaymentInfo } from '@/components/zakat-online/payment-info';
-import { createZakatOnline, uploadBuktiTransfer, getNextKodeUnik } from '@/lib/zakat-online-api';
+import { createZakatOnline, uploadBuktiTransfer, getNextKodeUnik, getZakatOnlineById } from '@/lib/zakat-online-api';
+import { notifyAdminNewUpload } from '@/app/actions/zakat-online';
 import { formatRupiah, isValidWhatsApp } from '@/lib/utils';
 import type { JenisZakat, MetodeBayar, ZakatFormData, ZakatOnline } from '@/types/zakat-online';
 import { NOMINAL_FITRAH_PER_JIWA, NIAT_ZAKAT } from '@/types/zakat-online';
@@ -215,7 +217,14 @@ export default function ZakatOnlinePage() {
 
     try {
       await uploadBuktiTransfer(createdTransaction.id, buktiFile);
-      setMessage({ type: 'success', text: 'Bukti transfer berhasil diupload! Mohon tunggu verifikasi admin.' });
+
+      // Get updated transaction data and notify admin
+      const updatedData = await getZakatOnlineById(createdTransaction.id);
+      if (updatedData) {
+        await notifyAdminNewUpload(updatedData);
+      }
+
+      setMessage({ type: 'success', text: 'Bukti transfer berhasil diupload! Admin akan segera memverifikasi.' });
       // Redirect to status page after 2 seconds
       setTimeout(() => {
         router.push(`/zakat-online/status?kode=${createdTransaction.kode_transaksi}`);
@@ -247,6 +256,13 @@ export default function ZakatOnlinePage() {
         <p className="text-gray-500">
           Musholla Al-Hikmah - Ramadhan 1447H / 2026M
         </p>
+        <Link
+          href="/zakat-online/status"
+          className="inline-flex items-center gap-1.5 mt-3 text-sm text-[#599E6E] hover:underline"
+        >
+          <Search className="w-3.5 h-3.5" />
+          Cek status transaksi
+        </Link>
       </div>
 
       {/* Step Indicator */}
@@ -656,6 +672,18 @@ export default function ZakatOnlinePage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Link to check status */}
+      <div className="mt-6 text-center">
+        <p className="text-sm text-gray-500 mb-2">Sudah pernah membuat transaksi?</p>
+        <Link
+          href="/zakat-online/status"
+          className="inline-flex items-center gap-2 text-[#599E6E] hover:underline font-medium"
+        >
+          <Search className="w-4 h-4" />
+          Cek Status Transaksi
+        </Link>
+      </div>
     </div>
   );
 }
