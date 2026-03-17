@@ -3,13 +3,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Home, Users, HandHeart, Images, FileDown, Menu, X, Settings, Smartphone } from 'lucide-react';
+import { Home, Users, HandHeart, Images, FileDown, Menu, X, Settings, HandCoins } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
 
 const navigation = [
   { name: 'Beranda', href: '/', icon: Home },
-  { name: 'Zakat Online', href: '/zakat-online', icon: Smartphone },
   { name: 'Penerimaan', href: '/penerimaan', icon: Users },
   { name: 'Penyaluran', href: '/penyaluran', icon: HandHeart },
   { name: 'Dokumentasi', href: '/dokumentasi', icon: Images },
@@ -25,6 +24,8 @@ export function Header() {
   if (pathname?.startsWith('/admin') || pathname === '/login') {
     return null;
   }
+
+  const isZakatActive = pathname === '/zakat-online' || pathname?.startsWith('/zakat-online');
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
@@ -49,6 +50,21 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
+            {/* Zakat Online - Prominent CTA Button */}
+            <Link
+              href="/zakat-online"
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all mr-2 ${
+                isZakatActive
+                  ? 'bg-[#599E6E] text-white shadow-md'
+                  : 'bg-gradient-to-r from-[#599E6E] to-[#4A8A5D] text-white shadow-md hover:shadow-lg hover:scale-[1.02]'
+              }`}
+            >
+              <HandCoins className="w-4 h-4" />
+              Zakat Online
+            </Link>
+
+            <div className="w-px h-6 bg-gray-200 mx-2" />
+
             {navigation.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
@@ -56,7 +72,7 @@ export function Header() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isActive
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive
                     ? 'bg-[#599E6E]/10 text-[#599E6E]'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                     }`}
@@ -69,7 +85,7 @@ export function Header() {
             {user && (
               <Link
                 href="/admin"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 ml-2 border-l border-gray-200 pl-4"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 ml-2 border-l border-gray-200 pl-4"
               >
                 <Settings className="w-4 h-4" />
                 Admin
@@ -95,6 +111,20 @@ export function Header() {
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <nav className="md:hidden py-4 border-t border-gray-100">
+            {/* Zakat Online - Prominent in mobile menu too */}
+            <Link
+              href="/zakat-online"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold mb-2 ${
+                isZakatActive
+                  ? 'bg-[#599E6E] text-white'
+                  : 'bg-gradient-to-r from-[#599E6E] to-[#4A8A5D] text-white'
+              }`}
+            >
+              <HandCoins className="w-5 h-5" />
+              Zakat Online
+            </Link>
+
             {navigation.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
