@@ -2,8 +2,21 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
+// Public client (anon key) - for client-side and public operations
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// Admin client (service role key) - for server-side operations that bypass RLS
+// Only use this in Server Actions or API routes!
+export const supabaseAdmin = supabaseServiceKey
+  ? createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    })
+  : supabase; // Fallback to public client if service key not configured
 
 // Helper untuk mendapatkan tahun Hijriah saat ini
 export function getCurrentHijriYear(): string {

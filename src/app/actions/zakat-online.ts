@@ -3,7 +3,7 @@
 // Server Actions for Zakat Online
 // These run on the server and can access server-side env vars
 
-import { supabase, getCurrentHijriYear, getCurrentMasehiYear } from '@/lib/supabase';
+import { supabase, supabaseAdmin, getCurrentHijriYear, getCurrentMasehiYear } from '@/lib/supabase';
 import { generateInvoiceToken, formatWhatsAppNumber } from '@/lib/utils';
 import type { ZakatOnline } from '@/types/zakat-online';
 import { formatRupiah } from '@/lib/utils';
@@ -83,7 +83,7 @@ export async function verifyZakatOnlineAction(
 
     if (updateError) {
       console.error('Error verifying zakat online:', updateError);
-      return { success: false, error: 'Gagal memverifikasi transaksi' };
+      return { success: false, error: `Gagal memverifikasi: ${updateError.message}` };
     }
 
     // 2. Insert into penerimaan table
@@ -104,13 +104,19 @@ export async function verifyZakatOnlineAction(
       tahun_masehi: zakatData.tahun_masehi || getCurrentMasehiYear(),
     };
 
-    const { error: penerimaanError } = await supabase
+    // Use supabaseAdmin to bypass RLS for server-side insert
+    const { error: penerimaanError } = await supabaseAdmin
       .from('penerimaan')
       .insert(penerimaanData);
 
     if (penerimaanError) {
       console.error('Error inserting penerimaan:', penerimaanError);
-      // Don't fail the whole operation, just log it
+      // Return error so user knows data didn't sync
+      return {
+        success: true,
+        data: zakatData,
+        error: `Verifikasi berhasil, tapi gagal sinkronisasi ke penerimaan: ${penerimaanError.message}`
+      };
     }
 
     // 3. Send WhatsApp to user
