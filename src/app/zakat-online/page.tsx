@@ -271,11 +271,10 @@ export default function ZakatOnlinePage() {
       {/* Message */}
       {message && (
         <div
-          className={`mt-4 p-4 rounded-lg flex items-center gap-2 ${
-            message.type === 'success'
-              ? 'bg-green-50 text-green-800 border border-green-200'
-              : 'bg-red-50 text-red-800 border border-red-200'
-          }`}
+          className={`mt-4 p-4 rounded-lg flex items-center gap-2 ${message.type === 'success'
+            ? 'bg-green-50 text-green-800 border border-green-200'
+            : 'bg-red-50 text-red-800 border border-red-200'
+            }`}
         >
           {message.type === 'success' ? (
             <CheckCircle className="w-5 h-5 flex-shrink-0" />
@@ -344,11 +343,10 @@ export default function ZakatOnlinePage() {
                       key={jenis}
                       type="button"
                       onClick={() => updateFormData({ jenis_zakat: jenis })}
-                      className={`p-3 rounded-lg border-2 text-center transition-colors ${
-                        formData.jenis_zakat === jenis
-                          ? 'border-[#599E6E] bg-[#599E6E]/5 text-[#599E6E]'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
+                      className={`p-3 rounded-lg border-2 text-center transition-colors ${formData.jenis_zakat === jenis
+                        ? 'border-[#599E6E] bg-[#599E6E]/5 text-[#599E6E]'
+                        : 'border-gray-200 hover:border-gray-300'
+                        }`}
                     >
                       <span className="text-sm font-medium capitalize">{jenis}</span>
                     </button>
@@ -469,9 +467,6 @@ export default function ZakatOnlinePage() {
               <div className="bg-gray-50 rounded-xl p-4">
                 <h3 className="font-semibold text-gray-900 mb-3">Niat Zakat</h3>
                 <div className="space-y-3">
-                  <p className="text-xl text-right font-arabic leading-loose" dir="rtl">
-                    {getNiatContent().arab}
-                  </p>
                   <p className="text-sm text-gray-600 italic">{getNiatContent().latin}</p>
                   <p className="text-sm text-gray-800">{getNiatContent().indonesia}</p>
                 </div>
