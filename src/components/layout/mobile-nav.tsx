@@ -30,14 +30,13 @@ export function MobileNav() {
       {/* Floating Zakat Button - separate from nav */}
       <Link
         href="/zakat-online"
-        className="md:hidden fixed bottom-12 left-1/2 -translate-x-1/2 z-[60] flex flex-col items-center"
+        className="md:hidden fixed bottom-2 left-1/2 -translate-x-1/2 z-[60] flex flex-col items-center"
       >
         <div
-          className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all ${
-            isZakatActive
-              ? 'bg-[#599E6E]'
-              : 'bg-gradient-to-br from-[#599E6E] to-[#4A8A5D] hover:scale-105'
-          }`}
+          className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all ${isZakatActive
+            ? 'bg-[#355e41]'
+            : 'bg-gradient-to-br from-[#355e41] to-[#4A8A5D] hover:scale-105'
+            }`}
           style={{
             boxShadow: '0 4px 20px rgba(89, 158, 110, 0.4)',
           }}
@@ -45,9 +44,8 @@ export function MobileNav() {
           <HandCoins className="w-8 h-8 text-white" />
         </div>
         <span
-          className={`text-xs mt-1 font-semibold ${
-            isZakatActive ? 'text-[#599E6E]' : 'text-gray-700'
-          }`}
+          className={`text-xs mt-1 font-semibold ${isZakatActive ? 'text-[#599E6E]' : 'text-gray-700'
+            }`}
         >
           Zakat
         </span>
@@ -64,11 +62,10 @@ export function MobileNav() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex flex-col items-center justify-center flex-1 h-full px-1 transition-colors ${
-                  isActive
-                    ? 'text-[#599E6E]'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
+                className={`flex flex-col items-center justify-center flex-1 h-full px-1 transition-colors ${isActive
+                  ? 'text-[#599E6E]'
+                  : 'text-gray-500 hover:text-gray-700'
+                  }`}
               >
                 <Icon className={`w-6 h-6 ${isActive ? 'stroke-[2.5]' : ''}`} />
                 <span className={`text-[10px] mt-1 ${isActive ? 'font-medium' : ''}`}>
@@ -89,11 +86,10 @@ export function MobileNav() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex flex-col items-center justify-center flex-1 h-full px-1 transition-colors ${
-                  isActive
-                    ? 'text-[#599E6E]'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
+                className={`flex flex-col items-center justify-center flex-1 h-full px-1 transition-colors ${isActive
+                  ? 'text-[#599E6E]'
+                  : 'text-gray-500 hover:text-gray-700'
+                  }`}
               >
                 <Icon className={`w-6 h-6 ${isActive ? 'stroke-[2.5]' : ''}`} />
                 <span className={`text-[10px] mt-1 ${isActive ? 'font-medium' : ''}`}>
