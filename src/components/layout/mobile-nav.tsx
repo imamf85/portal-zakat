@@ -26,86 +26,84 @@ export function MobileNav() {
   const isZakatActive = pathname === '/zakat-online' || pathname?.startsWith('/zakat-online');
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 safe-area-bottom">
-      {/* Background */}
-      <div className="absolute inset-0 bg-white border-t border-gray-200" />
-
-      <div className="relative flex justify-around items-end h-16 px-2">
-        {/* Left navigation items */}
-        {leftNav.map((item) => {
-          const isActive = pathname === item.href;
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`flex flex-col items-center justify-center flex-1 h-full px-1 transition-colors ${
-                isActive
-                  ? 'text-[#599E6E]'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : ''}`} />
-              <span className={`text-[10px] mt-1 ${isActive ? 'font-medium' : ''}`}>
-                {item.name}
-              </span>
-            </Link>
-          );
-        })}
-
-        {/* Center floating button - Zakat Online */}
-        <div className="flex flex-col items-center justify-end flex-1 relative">
-          <Link
-            href="/zakat-online"
-            className="absolute -top-6 flex flex-col items-center"
-          >
-            {/* Floating button */}
-            <div
-              className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all ${
-                isZakatActive
-                  ? 'bg-[#599E6E] shadow-[#599E6E]/40'
-                  : 'bg-gradient-to-br from-[#599E6E] to-[#4A8A5D] shadow-[#599E6E]/30 hover:shadow-[#599E6E]/50 hover:scale-105'
-              }`}
-              style={{
-                boxShadow: isZakatActive
-                  ? '0 8px 24px rgba(89, 158, 110, 0.5)'
-                  : '0 8px 20px rgba(89, 158, 110, 0.35)',
-              }}
-            >
-              <HandCoins className="w-7 h-7 text-white" />
-            </div>
-            <span
-              className={`text-[10px] mt-1.5 font-medium ${
-                isZakatActive ? 'text-[#599E6E]' : 'text-gray-600'
-              }`}
-            >
-              Zakat
-            </span>
-          </Link>
+    <>
+      {/* Floating Zakat Button - separate from nav */}
+      <Link
+        href="/zakat-online"
+        className="md:hidden fixed bottom-12 left-1/2 -translate-x-1/2 z-[60] flex flex-col items-center"
+      >
+        <div
+          className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all ${
+            isZakatActive
+              ? 'bg-[#599E6E]'
+              : 'bg-gradient-to-br from-[#599E6E] to-[#4A8A5D] hover:scale-105'
+          }`}
+          style={{
+            boxShadow: '0 4px 20px rgba(89, 158, 110, 0.4)',
+          }}
+        >
+          <HandCoins className="w-8 h-8 text-white" />
         </div>
+        <span
+          className={`text-xs mt-1 font-semibold ${
+            isZakatActive ? 'text-[#599E6E]' : 'text-gray-700'
+          }`}
+        >
+          Zakat
+        </span>
+      </Link>
 
-        {/* Right navigation items */}
-        {rightNav.map((item) => {
-          const isActive = pathname === item.href;
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`flex flex-col items-center justify-center flex-1 h-full px-1 transition-colors ${
-                isActive
-                  ? 'text-[#599E6E]'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : ''}`} />
-              <span className={`text-[10px] mt-1 ${isActive ? 'font-medium' : ''}`}>
-                {item.name}
-              </span>
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
+      {/* Bottom Navigation Bar */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 safe-area-bottom">
+        <div className="flex justify-around items-center h-16">
+          {/* Left navigation items */}
+          {leftNav.map((item) => {
+            const isActive = pathname === item.href;
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`flex flex-col items-center justify-center flex-1 h-full px-1 transition-colors ${
+                  isActive
+                    ? 'text-[#599E6E]'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                <Icon className={`w-6 h-6 ${isActive ? 'stroke-[2.5]' : ''}`} />
+                <span className={`text-[10px] mt-1 ${isActive ? 'font-medium' : ''}`}>
+                  {item.name}
+                </span>
+              </Link>
+            );
+          })}
+
+          {/* Empty space for floating button */}
+          <div className="flex-1" />
+
+          {/* Right navigation items */}
+          {rightNav.map((item) => {
+            const isActive = pathname === item.href;
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`flex flex-col items-center justify-center flex-1 h-full px-1 transition-colors ${
+                  isActive
+                    ? 'text-[#599E6E]'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                <Icon className={`w-6 h-6 ${isActive ? 'stroke-[2.5]' : ''}`} />
+                <span className={`text-[10px] mt-1 ${isActive ? 'font-medium' : ''}`}>
+                  {item.name}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+    </>
   );
 }
