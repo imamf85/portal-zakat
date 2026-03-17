@@ -1,28 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { FileDown, FileText, Calendar } from 'lucide-react';
-
-// Data dummy laporan tersedia
-const laporanTersedia = [
-  {
-    tahunHijriah: '1447',
-    tahunMasehi: '2026',
-    status: 'ongoing',
-    label: 'Tahun Ini (Sedang Berjalan)',
-  },
-  {
-    tahunHijriah: '1446',
-    tahunMasehi: '2025',
-    status: 'completed',
-    label: 'Laporan Lengkap',
-  },
-  {
-    tahunHijriah: '1445',
-    tahunMasehi: '2024',
-    status: 'completed',
-    label: 'Laporan Lengkap',
-  },
-];
+import { Card } from '@/components/ui/card';
+import { FileText, Clock } from 'lucide-react';
 
 export default function LaporanPage() {
   return (
@@ -37,89 +14,22 @@ export default function LaporanPage() {
         </p>
       </div>
 
-      {/* Info */}
-      <Card className="mb-8 p-6 bg-[#599E6E]/5 border-[#599E6E]/20">
-        <div className="flex items-start gap-4">
-          <FileText className="w-8 h-8 text-[#599E6E] flex-shrink-0" />
-          <div>
-            <h3 className="font-semibold text-[#4A8A5D]">Transparansi Laporan</h3>
-            <p className="mt-1 text-sm text-[#599E6E]">
-              Laporan berisi rekapitulasi lengkap penerimaan dan penyaluran zakat fitrah,
-              termasuk daftar muzakki dan mustahik. Laporan dapat diunduh untuk keperluan
-              dokumentasi atau pelaporan ke jamaah.
-            </p>
-          </div>
+      {/* Coming Soon */}
+      <Card className="p-12 text-center">
+        <div className="w-20 h-20 bg-[#599E6E]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <FileText className="w-10 h-10 text-[#599E6E]" />
         </div>
-      </Card>
-
-      {/* Daftar Laporan */}
-      <div className="space-y-4">
-        {laporanTersedia.map((laporan) => (
-          <Card key={laporan.tahunHijriah}>
-            <CardContent className="p-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-[#599E6E]/10 rounded-lg">
-                    <Calendar className="w-6 h-6 text-[#599E6E]" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Zakat Fitrah {laporan.tahunHijriah} H / {laporan.tahunMasehi} M
-                    </h3>
-                    <p className="text-sm text-gray-500">{laporan.label}</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-2">
-                  {laporan.status === 'completed' ? (
-                    <>
-                      <Button variant="primary" className="gap-2">
-                        <FileDown className="w-4 h-4" />
-                        Download PDF
-                      </Button>
-                      <Button variant="outline" className="gap-2">
-                        <FileDown className="w-4 h-4" />
-                        Excel
-                      </Button>
-                    </>
-                  ) : (
-                    <Button variant="secondary" disabled className="gap-2">
-                      <FileDown className="w-4 h-4" />
-                      Belum Tersedia
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Catatan */}
-      <Card className="mt-8">
-        <CardHeader>
-          <CardTitle className="text-base">Catatan</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-2 text-sm text-gray-600">
-            <li className="flex items-start gap-2">
-              <span className="text-[#599E6E]">•</span>
-              Laporan tahun berjalan akan tersedia setelah periode zakat fitrah berakhir
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-[#599E6E]">•</span>
-              Format PDF berisi laporan lengkap dengan tanda tangan pengurus
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-[#599E6E]">•</span>
-              Format Excel berisi data mentah untuk keperluan analisis lebih lanjut
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-[#599E6E]">•</span>
-              Nama muzakki dan mustahik dalam laporan tidak disensor untuk keperluan validasi
-            </li>
-          </ul>
-        </CardContent>
+        <h2 className="text-2xl font-bold text-gray-900 mb-3">
+          Segera Hadir
+        </h2>
+        <p className="text-gray-500 max-w-md mx-auto mb-6">
+          Fitur download laporan sedang dalam pengembangan.
+          Laporan lengkap akan tersedia setelah periode zakat fitrah Ramadhan 1447H berakhir.
+        </p>
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-700 rounded-full text-sm">
+          <Clock className="w-4 h-4" />
+          <span>Perkiraan: Setelah Idul Fitri 1447H</span>
+        </div>
       </Card>
     </div>
   );
