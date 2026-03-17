@@ -14,7 +14,8 @@ import {
   Menu,
   X,
   Loader2,
-  ShieldX
+  ShieldX,
+  Smartphone
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
@@ -23,6 +24,7 @@ import { Button } from '@/components/ui/button';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'Zakat Online', href: '/admin/zakat-online', icon: Smartphone },
   { name: 'Input Penerimaan', href: '/admin/penerimaan', icon: UserPlus },
   { name: 'Input Penyaluran', href: '/admin/penyaluran', icon: HandHeart },
   { name: 'Upload Dokumentasi', href: '/admin/dokumentasi', icon: Images },

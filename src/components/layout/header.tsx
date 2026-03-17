@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Home, Users, HandHeart, Images, FileDown, Menu, X, Settings } from 'lucide-react';
+import { Home, Users, HandHeart, Images, FileDown, Menu, X, Settings, Smartphone } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
 
 const navigation = [
   { name: 'Beranda', href: '/', icon: Home },
+  { name: 'Zakat Online', href: '/zakat-online', icon: Smartphone },
   { name: 'Penerimaan', href: '/penerimaan', icon: Users },
   { name: 'Penyaluran', href: '/penyaluran', icon: HandHeart },
   { name: 'Dokumentasi', href: '/dokumentasi', icon: Images },

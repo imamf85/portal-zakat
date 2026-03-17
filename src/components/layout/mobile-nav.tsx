@@ -2,14 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Users, HandHeart, Images, FileDown } from 'lucide-react';
+import { Home, Users, HandHeart, Images, Smartphone } from 'lucide-react';
 
 const navigation = [
   { name: 'Beranda', href: '/', icon: Home },
+  { name: 'Zakat', href: '/zakat-online', icon: Smartphone },
   { name: 'Penerimaan', href: '/penerimaan', icon: Users },
   { name: 'Penyaluran', href: '/penyaluran', icon: HandHeart },
   { name: 'Dokumentasi', href: '/dokumentasi', icon: Images },
-  { name: 'Laporan', href: '/laporan', icon: FileDown },
 ];
 
 export function MobileNav() {
