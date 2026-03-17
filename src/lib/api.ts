@@ -96,6 +96,58 @@ export async function getDokumentasi(tahunHijriah?: string): Promise<Dokumentasi
   return data || [];
 }
 
+export async function createDokumentasi(
+  dokumentasi: Omit<Dokumentasi, 'id' | 'created_at'>
+): Promise<Dokumentasi | null> {
+  const { data, error } = await supabase
+    .from('dokumentasi')
+    .insert(dokumentasi)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating dokumentasi:', error);
+    throw error;
+  }
+
+  return data;
+}
+
+export async function deleteDokumentasi(id: string): Promise<boolean> {
+  const { error } = await supabase
+    .from('dokumentasi')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error deleting dokumentasi:', error);
+    return false;
+  }
+
+  return true;
+}
+
+export async function uploadDokumentasiImage(file: File): Promise<string | null> {
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+  const filePath = `photos/${fileName}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from('dokumentasi')
+    .upload(filePath, file);
+
+  if (uploadError) {
+    console.error('Error uploading dokumentasi image:', uploadError);
+    throw uploadError;
+  }
+
+  const { data: urlData } = supabase.storage
+    .from('dokumentasi')
+    .getPublicUrl(filePath);
+
+  return urlData.publicUrl;
+}
+
 // =============================================
 // REKAP TAHUNAN
 // =============================================
