@@ -38,21 +38,18 @@ export function PaymentInfo({
         <button
           type="button"
           onClick={() => onMethodChange('transfer')}
-          className={`p-4 rounded-lg border-2 transition-colors ${
-            metodeBayar === 'transfer'
+          className={`p-4 rounded-lg border-2 transition-colors ${metodeBayar === 'transfer'
               ? 'border-[#599E6E] bg-[#599E6E]/5'
               : 'border-gray-200 hover:border-gray-300'
-          }`}
+            }`}
         >
           <Building2
-            className={`w-6 h-6 mx-auto mb-2 ${
-              metodeBayar === 'transfer' ? 'text-[#599E6E]' : 'text-gray-400'
-            }`}
+            className={`w-6 h-6 mx-auto mb-2 ${metodeBayar === 'transfer' ? 'text-[#599E6E]' : 'text-gray-400'
+              }`}
           />
           <span
-            className={`text-sm font-medium ${
-              metodeBayar === 'transfer' ? 'text-[#599E6E]' : 'text-gray-600'
-            }`}
+            className={`text-sm font-medium ${metodeBayar === 'transfer' ? 'text-[#599E6E]' : 'text-gray-600'
+              }`}
           >
             Transfer Bank
           </span>
@@ -60,21 +57,18 @@ export function PaymentInfo({
         <button
           type="button"
           onClick={() => onMethodChange('qris')}
-          className={`p-4 rounded-lg border-2 transition-colors ${
-            metodeBayar === 'qris'
+          className={`p-4 rounded-lg border-2 transition-colors ${metodeBayar === 'qris'
               ? 'border-[#599E6E] bg-[#599E6E]/5'
               : 'border-gray-200 hover:border-gray-300'
-          }`}
+            }`}
         >
           <QrCode
-            className={`w-6 h-6 mx-auto mb-2 ${
-              metodeBayar === 'qris' ? 'text-[#599E6E]' : 'text-gray-400'
-            }`}
+            className={`w-6 h-6 mx-auto mb-2 ${metodeBayar === 'qris' ? 'text-[#599E6E]' : 'text-gray-400'
+              }`}
           />
           <span
-            className={`text-sm font-medium ${
-              metodeBayar === 'qris' ? 'text-[#599E6E]' : 'text-gray-600'
-            }`}
+            className={`text-sm font-medium ${metodeBayar === 'qris' ? 'text-[#599E6E]' : 'text-gray-600'
+              }`}
           >
             QRIS
           </span>
@@ -170,7 +164,7 @@ export function PaymentInfo({
               />
             </div>
             <p className="text-sm font-medium text-gray-700 mt-3">
-              {BANK_INFO.atas_nama}
+              MUSHOLLA AL HIKMAH - Niaga
             </p>
           </div>
 
