@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { UserPlus, Save, RotateCcw } from 'lucide-react';
 import { supabase, getCurrentHijriYear, getCurrentMasehiYear } from '@/lib/supabase';
+import { CountdownTimer } from '@/components/zakat-online/countdown-timer';
+import { isZakatOpen } from '@/lib/zakat-config';
 
 type JenisFitrah = 'uang' | 'beras' | '';
 
@@ -38,6 +40,7 @@ export default function InputPenerimaanPage() {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [zakatOpen, setZakatOpen] = useState(isZakatOpen());
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -130,6 +133,16 @@ export default function InputPenerimaanPage() {
         <p className="mt-1 text-gray-500">
           Tambah data penerimaan zakat dari muzakki
         </p>
+      </div>
+
+      {/* Countdown Timer */}
+      <div className="mb-6">
+        <CountdownTimer variant="compact" onExpired={() => setZakatOpen(false)} />
+        {!zakatOpen && (
+          <p className="mt-2 text-sm text-amber-600">
+            Periode penerimaan telah ditutup. Form masih dapat digunakan untuk input data terlambat.
+          </p>
+        )}
       </div>
 
       {/* Message */}

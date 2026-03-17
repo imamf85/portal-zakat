@@ -127,6 +127,7 @@ export function RealtimeDashboard({ initialStats }: RealtimeDashboardProps) {
             title="Zakat Fitrah (Beras)"
             value={formatKg(penerimaan.zakatBeras)}
             subtitle={`${jiwaBeras} jiwa`}
+            note="1 jiwa = 2.5 kg = 3.5 L"
             icon={<Scale className="w-6 h-6 text-[#599E6E]" />}
             trend={tahunLalu ? hitungTrend(tahunLalu.total_zakat_beras_kg, penerimaan.zakatBeras) : undefined}
           />

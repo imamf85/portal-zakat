@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { StepIndicator, ZAKAT_FORM_STEPS } from '@/components/zakat-online/step-indicator';
 import { NameListInput } from '@/components/zakat-online/name-list-input';
 import { PaymentInfo } from '@/components/zakat-online/payment-info';
+import { CountdownTimer } from '@/components/zakat-online/countdown-timer';
+import { isZakatOpen } from '@/lib/zakat-config';
 import { createZakatOnline, uploadBuktiTransfer, getNextKodeUnik, getZakatOnlineById } from '@/lib/zakat-online-api';
 import { notifyAdminNewUpload } from '@/app/actions/zakat-online';
 import { formatRupiah, isValidWhatsApp } from '@/lib/utils';
@@ -39,6 +41,7 @@ export default function ZakatOnlinePage() {
   const [createdTransaction, setCreatedTransaction] = useState<ZakatOnline | null>(null);
   const [buktiFile, setBuktiFile] = useState<File | null>(null);
   const [buktiPreview, setBuktiPreview] = useState<string | null>(null);
+  const [zakatOpen, setZakatOpen] = useState(isZakatOpen());
 
   // Load kode unik on mount
   useEffect(() => {
@@ -265,8 +268,28 @@ export default function ZakatOnlinePage() {
         </Link>
       </div>
 
-      {/* Step Indicator */}
-      <StepIndicator steps={ZAKAT_FORM_STEPS} currentStep={currentStep} />
+      {/* Countdown Timer */}
+      <div className="mb-8">
+        <CountdownTimer onExpired={() => setZakatOpen(false)} />
+      </div>
+
+      {/* Jika zakat sudah ditutup, tampilkan pesan dan link cek status saja */}
+      {!zakatOpen ? (
+        <div className="text-center py-8">
+          <p className="text-gray-500 mb-4">
+            Anda masih dapat mengecek status transaksi yang sudah dibuat sebelumnya.
+          </p>
+          <Link href="/zakat-online/status">
+            <Button variant="outline">
+              <Search className="w-4 h-4 mr-2" />
+              Cek Status Transaksi
+            </Button>
+          </Link>
+        </div>
+      ) : (
+        <>
+          {/* Step Indicator */}
+          <StepIndicator steps={ZAKAT_FORM_STEPS} currentStep={currentStep} />
 
       {/* Message */}
       {message && (
@@ -679,6 +702,8 @@ export default function ZakatOnlinePage() {
           Cek Status Transaksi
         </Link>
       </div>
+        </>
+      )}
     </div>
   );
 }

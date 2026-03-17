@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { getStatistikDashboard } from '@/lib/api';
 import { getCurrentHijriYear } from '@/lib/supabase';
 import { RealtimeDashboard } from '@/components/dashboard/realtime-dashboard';
+import { ZakatCountdownSection } from '@/components/dashboard/zakat-countdown-section';
 
 export const revalidate = 60;
 
@@ -44,6 +45,9 @@ export default async function Home() {
           Data Real-time
         </div>
       </div>
+
+      {/* Countdown Timer & CTA Zakat Online */}
+      <ZakatCountdownSection />
 
       {/* Realtime Dashboard Stats */}
       <RealtimeDashboard initialStats={stats} />

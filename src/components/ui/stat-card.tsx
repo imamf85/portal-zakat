@@ -7,6 +7,7 @@ interface StatCardProps {
   title: string;
   value: string;
   subtitle?: string;
+  note?: string;
   icon?: ReactNode;
   trend?: number; // Persentase perubahan dari tahun lalu
   className?: string;
@@ -16,6 +17,7 @@ export function StatCard({
   title,
   value,
   subtitle,
+  note,
   icon,
   trend,
   className = ''
@@ -42,6 +44,9 @@ export function StatCard({
           <p className="mt-2 text-2xl font-bold text-gray-900">{value}</p>
           {subtitle && (
             <p className="mt-1 text-sm text-gray-500">{subtitle}</p>
+          )}
+          {note && (
+            <p className="mt-0.5 text-xs text-gray-400 italic">{note}</p>
           )}
           {trend !== undefined && (
             <div className={`mt-2 flex items-center gap-1 text-sm ${getTrendColor()}`}>
