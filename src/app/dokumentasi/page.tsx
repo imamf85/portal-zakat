@@ -1,9 +1,8 @@
-import Image from 'next/image';
 import { Card } from '@/components/ui/card';
-import { Images, Calendar } from 'lucide-react';
+import { Images } from 'lucide-react';
 import { getDokumentasi } from '@/lib/api';
 import { getCurrentHijriYear } from '@/lib/supabase';
-import { formatTanggal } from '@/lib/utils';
+import { GalleryWithModal } from '@/components/dokumentasi/gallery-modal';
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
@@ -37,40 +36,9 @@ export default async function DokumentasiPage() {
         </Card>
       )}
 
-      {/* Grid Galeri */}
+      {/* Grid Galeri dengan Modal */}
       {dokumentasi.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {dokumentasi.map((doc) => (
-            <Card key={doc.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
-              {/* Image */}
-              <div className="aspect-video relative bg-gray-100">
-                <Image
-                  src={doc.url_foto}
-                  alt={doc.judul}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
-              </div>
-
-              {/* Caption */}
-              <div className="p-4">
-                <h3 className="font-semibold text-gray-900 group-hover:text-[#599E6E] transition-colors">
-                  {doc.judul}
-                </h3>
-                {doc.deskripsi && (
-                  <p className="mt-1 text-sm text-gray-500 line-clamp-2">
-                    {doc.deskripsi}
-                  </p>
-                )}
-                <div className="mt-3 flex items-center gap-2 text-xs text-gray-400">
-                  <Calendar className="w-4 h-4" />
-                  <span>{formatTanggal(doc.created_at)}</span>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+        <GalleryWithModal dokumentasi={dokumentasi} />
       )}
     </div>
   );

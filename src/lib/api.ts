@@ -101,7 +101,14 @@ export async function createDokumentasi(
 ): Promise<Dokumentasi | null> {
   const { data, error } = await supabase
     .from('dokumentasi')
-    .insert(dokumentasi)
+    .insert({
+      judul: dokumentasi.judul,
+      deskripsi: dokumentasi.deskripsi,
+      url_foto: dokumentasi.foto_urls?.[0] || dokumentasi.url_foto, // backward compat
+      foto_urls: dokumentasi.foto_urls || [],
+      tahun_hijriah: dokumentasi.tahun_hijriah,
+      tahun_masehi: dokumentasi.tahun_masehi,
+    })
     .select()
     .single();
 
@@ -111,6 +118,76 @@ export async function createDokumentasi(
   }
 
   return data;
+}
+
+export async function addFotosToDokumentasi(
+  id: string,
+  newFotoUrls: string[]
+): Promise<boolean> {
+  // Get current foto_urls
+  const { data: current, error: fetchError } = await supabase
+    .from('dokumentasi')
+    .select('foto_urls')
+    .eq('id', id)
+    .single();
+
+  if (fetchError) {
+    console.error('Error fetching dokumentasi:', fetchError);
+    return false;
+  }
+
+  const currentUrls = (current?.foto_urls as string[]) || [];
+  const updatedUrls = [...currentUrls, ...newFotoUrls];
+
+  const { error } = await supabase
+    .from('dokumentasi')
+    .update({
+      foto_urls: updatedUrls,
+      url_foto: updatedUrls[0] || null, // keep backward compat
+    })
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error adding fotos:', error);
+    return false;
+  }
+
+  return true;
+}
+
+export async function removeFotoFromDokumentasi(
+  id: string,
+  fotoUrl: string
+): Promise<boolean> {
+  // Get current foto_urls
+  const { data: current, error: fetchError } = await supabase
+    .from('dokumentasi')
+    .select('foto_urls')
+    .eq('id', id)
+    .single();
+
+  if (fetchError) {
+    console.error('Error fetching dokumentasi:', fetchError);
+    return false;
+  }
+
+  const currentUrls = (current?.foto_urls as string[]) || [];
+  const updatedUrls = currentUrls.filter(url => url !== fotoUrl);
+
+  const { error } = await supabase
+    .from('dokumentasi')
+    .update({
+      foto_urls: updatedUrls,
+      url_foto: updatedUrls[0] || null,
+    })
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error removing foto:', error);
+    return false;
+  }
+
+  return true;
 }
 
 export async function deleteDokumentasi(id: string): Promise<boolean> {

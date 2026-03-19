@@ -66,6 +66,7 @@ export interface Dokumentasi {
   judul: string;
   deskripsi: string | null;
   url_foto: string;
+  foto_urls: string[]; // Multiple photos
   tahun_hijriah: string;
   tahun_masehi: number;
   created_at: string;
