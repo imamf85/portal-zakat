@@ -77,3 +77,39 @@ body {
     border-radius: 0 0 3px 3px;
   }
 }
+
+/* Print Styles */
+@media print {
+  body {
+    background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide header, footer, and navigation when printing */
+  header,
+  footer,
+  nav {
+    display: none !important;
+  }
+
+  /* Ensure tables don't break awkwardly */
+  table {
+    break-inside: auto;
+  }
+
+  tr {
+    break-inside: avoid;
+    break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  /* Adjust margins */
+  @page {
+    margin: 1cm;
+    size: A4;
+  }
+}
